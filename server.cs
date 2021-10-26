@@ -4,7 +4,6 @@
 //Logging?
 //$Pref::Server::IpTools::Info[ip] = name TAB autoAdmin TAB autoSuperAdmin TAB BanReason TAB BanOverTime TAB BanOverYear;
 //$Pref::Server::IpTools::NameToIP[name] = ip
-$Pref::Server::IpTools::IpBanByDefault = true;
 
 //TODO: Tie this all into the auto admin and ban guis
 function serverCmdSetAuto(%client,%name,%level)
@@ -121,18 +120,11 @@ package ipTools
 
     function BanManagerSO::addBan(%this, %adminID, %victimID, %victimBL_ID, %reason, %banTime)
     {  
-        if ($Pref::Server::IpTools::IpBanByDefault)
+        if ($Pref::Server::IpTools::NameToIP[%victimBL_ID] || findClientByName(%victimBL_ID))
         {
-            if ($Pref::Server::IpTools::NameToIP[%victimBL_ID])
-            {
-                ipToolsIpBan(%victimBL_ID);
-            }
-            else if (isObject(findClientByBl_id(%victimBL_ID)))
-            {
-                ipToolsIpBan(findClientByBl_id(%victimBL_ID).getPlayerName());
-            }
+            ipToolsIpBan(%victimBL_ID);
+            return parent::addBan(%this, %adminID, %victimID, %victimBL_ID, %reason, %banTime);
         }
-        return parent::addBan(%this, %adminID, %victimID, %victimBL_ID, %reason, %banTime);
     }
 
     function GameConnection::autoAdminCheck(%client)
