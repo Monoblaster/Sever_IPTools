@@ -11,7 +11,7 @@ function serverCmdSetAuto(%client,%name,%level)
     %client = findClientByName(%name);
     if(%client && %client.isHost())
     {
-        %ip = %client.getRawIp();
+        %ip = getSafeVariableName(%client.getRawIp());
         %name = %client.getPlayerName();
         %info = $Pref::Server::IpTools::Info[%ip];
         switch(%level)
@@ -28,13 +28,13 @@ function serverCmdSetAuto(%client,%name,%level)
                 %info = setField(%info,1,0);
                 %info = setField(%info,2,0);
         }
-        $Pref::Server::IpTools::Info[%ip] = %info;
+        $Pref::Server::IpTools::Info[getSafeVariableName(%ip)] = %info;
     }
         
 }
 
 package ipTools
-{
+{   
     function ipToolsIpBan(%name,%reason,%bantime)
     {
         %ip = $Pref::Server::IpTools::NameToIP[%name];
@@ -66,7 +66,7 @@ package ipTools
     function ipToolsBanCheck(%client)
     {
         //TODO: check if ban is over
-        %ip = %client.getRawIp();
+        %ip = getSafeVariableName(%client.getRawIp());
         %info = $Pref::Server::IpTools::Info[%ip];
         if (!%info)
         {
@@ -88,7 +88,7 @@ package ipTools
 
     function ipToolsautoAdminCheck(%client)
     {
-        %ip = %client.getRawIp();
+        %ip = getSafeVariableName(%client.getRawIp());
         %info = $Pref::Server::IpTools::Info[%ip];
         %curName = %client.getPlayerName();
 
